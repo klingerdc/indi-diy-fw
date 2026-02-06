@@ -1,27 +1,20 @@
+# CMakeLists.txt for DIY Serial Firmware INDI Driver
+
 cmake_minimum_required(VERSION 3.10)
 
-# Project name
-project(diy_serial_fw)
+project(diy_serial_fw LANGUAGES C CXX)
 
-# Set the C++ Standard
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
-
-# Add the source files
-set(SOURCES
-    src/main.cpp
-    src/serial_driver.cpp
-    src/indi_driver.cpp
-)
-
-# Include Header files
-include_directories(include)
-
-# Create the executable
-add_executable(diy_serial_fw ${SOURCES})
-
-# Link to the INDI library
+# Find dependencies
 find_package(INDI REQUIRED)
-include_directories(${INDI_INCLUDE_DIRS})
 
-target_link_libraries(diy_serial_fw ${INDI_LIBRARIES})
+# Add the executable for the INDI driver
+add_executable(diy_serial_fw main.cpp)
+
+# Link the INDI library
+target_link_libraries(diy_serial_fw INDI::INDI)
+
+# Set C++ standard
+set_target_properties(diy_serial_fw PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED ON)
+
+# Install the driver
+install(TARGETS diy_serial_fw DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
