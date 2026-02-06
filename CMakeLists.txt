@@ -1,15 +1,27 @@
 cmake_minimum_required(VERSION 3.10)
-project(indi_diy_serial_fw CXX)
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(INDI REQUIRED libindi)
+# Project name
+project(diy_serial_fw)
 
-add_library(indi_diy_serial_fw MODULE diy_serial_fw.cpp)
+# Set the C++ Standard
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-target_include_directories(indi_diy_serial_fw PRIVATE ${INDI_INCLUDE_DIRS})
-target_compile_options(indi_diy_serial_fw PRIVATE ${INDI_CFLAGS_OTHER})
-target_link_libraries(indi_diy_serial_fw PRIVATE ${INDI_LIBRARIES} indidriver)
+# Add the source files
+set(SOURCES
+    src/main.cpp
+    src/serial_driver.cpp
+    src/indi_driver.cpp
+)
 
-# Avoid "lib" prefix so the module name matches the driver name
-set_target_properties(indi_diy_serial_fw PROPERTIES PREFIX "")
+# Include Header files
+include_directories(include)
 
+# Create the executable
+add_executable(diy_serial_fw ${SOURCES})
+
+# Link to the INDI library
+find_package(INDI REQUIRED)
+include_directories(${INDI_INCLUDE_DIRS})
+
+target_link_libraries(diy_serial_fw ${INDI_LIBRARIES})
